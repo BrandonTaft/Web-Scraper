@@ -1,0 +1,9 @@
+//     fetch(cnn)
+//         .then(res => res.text())
+//         .then((html) => {
+//             callbackFunction(html);
+//         })
+//         .catch((err) => {
+//             console.log(err);
+//         })
+// };
