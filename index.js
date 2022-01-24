@@ -1,6 +1,7 @@
 import cheerio from 'cheerio';
 import nodemailer from 'nodemailer';
 import fetch from 'node-fetch';
+import sendMail from './Mailer.js';
 
 const cnn = 'https://lite.cnn.com/en';
 const string = 'US';
@@ -27,19 +28,18 @@ function getFromCNN(callbackFunction) {
 //Loads HTML html passed in from *getFromCNN* with the into a cheerio instance.
 //then initializes *Titles* array which will hold what we tell
 //cheerio to extract from the html html
+//then tells cheerio to look at the li element which is a child of ul element
+//then extract the title and link from each one 
+//and store them as objects in the *Titles* array
 function getLatestHeadline(html) {
     var $ = cheerio.load(html);
     var Titles = [];
-
-    //then tells cheerio to look at the li element which is a child of ul element
-    //then extract the title and link from each one 
-    //and store them as objects in the *Titles* array
     $('ul').children('li').each(function (i, el) {
         Titles.push({
             title: $(el).text(), link: $(el).children('a').attr('href')
         })
     })
-    return Titles[0 +1];
+    return Titles[0];
 };
 
 //fires the *getFromCNN* function
@@ -61,27 +61,31 @@ function getLatestHeadline(html) {
 
 //fires the *getFromCNN* function to get the newest headline
 //assigns variable *previousHeadline* to the output returned from *getLatestHeadline*
+//setTimeout fires *getFromCNN* again 2 seconds later which fires *getLatestHeadline*
+//assigns variable *newestHeadline* to the new output returned from *getLatestHeadline*
+//checks if the *newestheadline* matches *previousHeadline*
+//if they dont it prints 'new article found' and *newestheadline*
+//then checks if the title of *newestheadline* contains the word set in *string* 
+//if it does it prints 'new' + string + 'post found, Sending Email'
+//if it does match it prints 'There is nothing new about ' + string + ' yet'
+//"The most recent article is still", previousHeadline
 function compare() {
     getFromCNN((html) => {
         let previousHeadline = getLatestHeadline(html)
-        //fires the *getFromCNN* function again after the set interval time expires
-        //assigns variable *newestHeadline* to the output returned from *getLatestHeadline*
-        //checks if the *newestheadline* matches *previousHeadline*
-        //if they dont it prints 'new article found' and *newestheadline*
-        //then checks if the title of *newestheadline* contains the word set in *string* 
-        //if it does it prints 'new' + string + 'post found, Sending Email'
-        //if it doesnt match it prints 'There is nothing new about ' + string + ' yet'
-        //"The most recent article is still", previousHeadline
         setTimeout(() => {
             getFromCNN((html) => {
                 let newestHeadline = getLatestHeadline(html);
                 if (newestHeadline.title !== previousHeadline.title) {
                     console.log('new article found');
                     console.log(newestHeadline);
-                    if (newestHeadline.title.includes(string)){
-                     console.log('new' + string + 'post found, Sending Email');
+                    if (newestHeadline.title.includes(string)) {
+                        console.log('new' + string + 'post found, Sending Email');
+                        sendMail('New' + string + 'article released!',newestHeadline.title,newestHeadline.link,'')
+                    }else{
+                        sendMail('This is your most recent Article',newestHeadline.title,newestHeadline.link,'')
                     }
                 } else {
+                    sendMail('This is still the most recent Article',previousHeadline.title,newestHeadline.link,'')
                     console.log('There is nothing new about ' + string + ' yet')
                     console.log("The most recent article is still", previousHeadline)
                 }

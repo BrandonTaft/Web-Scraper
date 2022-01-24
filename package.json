@@ -19,6 +19,8 @@
   "homepage": "https://github.com/BrandonTaft/scraper#readme",
   "dependencies": {
     "cheerio": "^1.0.0-rc.10",
+    "dotenv": "^14.2.0",
+    "esm": "^3.2.25",
     "node-fetch": "^3.2.0",
     "node-mailer": "^0.1.1",
     "pug-cli": "^1.0.0-alpha6",
