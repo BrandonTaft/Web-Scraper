@@ -25,7 +25,7 @@ function getFromCNN(callbackFunction) {
         })
 };
 
-//Loads HTML html passed in from *getFromCNN* with the into a cheerio instance.
+//Loads HTML html passed in from *callback function* into a cheerio instance.
 //then initializes *Titles* array which will hold what we tell
 //cheerio to extract from the html html
 //then tells cheerio to look at the li element which is a child of ul element
@@ -85,7 +85,7 @@ function compare() {
                         sendMail('This is your most recent Article',newestHeadline.title,newestHeadline.link,'')
                     }
                 } else {
-                    sendMail('This is still the most recent Article',previousHeadline.title,newestHeadline.link,'')
+                    sendMail('This is still the most recent Article',previousHeadline.title,previousHeadline.link,'')
                     console.log('There is nothing new about ' + string + ' yet')
                     console.log("The most recent article is still", previousHeadline)
                 }
