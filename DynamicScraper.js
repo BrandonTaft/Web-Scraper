@@ -35,6 +35,19 @@ function getLatestTitle(data) {
     return VideoTitles[0]
 }
 
+
+function sortTitles() {
+    const string = "Rodgers"
+    fetchFromYouTube((data) => {
+        let titleList = getLatestTitle(data);
+        let titles = jobList.filter(titles => titles.title.includes(string)) 
+        // if(jobList.title.includes(string))
+        //console.log("JOBLIST: ",jobList)
+        console.log("MY JOBS",titles)
+    })
+}
+
+
 //   fetchFromYouTube((data) => {
 //       console.log(getLatestTitle(data))
 //   })
